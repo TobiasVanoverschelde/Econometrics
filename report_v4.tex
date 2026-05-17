@@ -1,0 +1,513 @@
+\documentclass[11pt,a4paper]{article}
+
+% ---- packages -----
+\usepackage[a4paper,margin=2.5cm]{geometry}
+\usepackage[onehalfspacing]{setspace}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{booktabs}
+\usepackage{tabularray}
+\UseTblrLibrary{booktabs}
+\UseTblrLibrary{siunitx}
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{amsmath, amssymb}
+\usepackage{natbib}
+\usepackage[hidelinks]{hyperref}
+\usepackage{titlesec}
+\titlespacing*{\section}{0pt}{1.0\baselineskip}{0.4\baselineskip}
+\titlespacing*{\subsection}{0pt}{0.8\baselineskip}{0.3\baselineskip}
+
+% modelsummary helpers
+\providecommand{\tinytableTabularrayUnderline}[1]{\underline{#1}}
+\providecommand{\tinytableTabularrayStrikeout}[1]{\sout{#1}}
+
+\title{\textbf{Economic Shocks and Civil Conflict in Africa:\\
+       A Re-examination of the Miguel-Satyanath-Sergenti\\
+       Rainfall-Instrument Approach}}
+\author{Alexander Lievens and Tobias Vanoverschelde\\
+\small KU Leuven: D0S91a Advanced Applied Econometrics\\
+\small Prof.\ Dr.\ Dirk Czarnitzki}
+\date{May 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\noindent
+We revisit the seminal instrumental-variables (IV) study of
+\citet{MSS2004}, which uses annual rainfall growth as an exogenous
+shifter of per-capita GDP growth to identify the causal effect of
+economic conditions on civil conflict in 41 sub-Saharan African
+countries during 1981 until 1999. Pooled OLS recovers the qualitative
+direction of the original association that negative growth coincides
+with more conflict, $\hat\beta=-0.51$ ($p=0.02$), but a battery of
+modern diagnostics flags the rainfall instruments as weak in our
+preferred two-way fixed-effects setting (cluster-robust first-stage
+$F=2.89$, well below the Stock-Yogo 10\%-maximum-size threshold of 19.93).
+Weak-instrument robust inference \citep{AndersonRubin1949} delivers
+a 95\% confidence interval of $[-4.41,\,7.49]$, uninformative about
+the sign of the structural parameter. Restoring the country-specific
+linear time trends used by MSS in place of year fixed effects almost
+doubles the first-stage $F$ to $4.45$ and produces a 2SLS point
+estimate of $-1.30$, in line with the OLS sign though still
+imprecisely estimated. Most decisively, a dynamic-panel
+Arellano-Bond specification \citep{ArellanoBond1991}, which
+explicitly accounts for the strong persistence of conflict, yields
+a negative and statistically significant coefficient on growth
+($-0.29$, $p=0.046$), corroborating the qualitative MSS conclusion
+while making clear that the rainfall instrument alone is fragile.
+The Wu-Hausman test also fails to reject exogeneity ($p=0.71$),
+suggesting that the well-determined OLS estimate may be the most
+defensible point estimate in this sample.
+\end{abstract}
+
+% ===========================================================================
+\section{Introduction}\label{sec:intro}
+% ===========================================================================
+Whether adverse economic shocks trigger civil conflict is a question
+with first-order policy implications for the design of aid, climate
+adaptation programmes and post-conflict reconstruction. Ordinary
+regressions of conflict on contemporaneous growth confound at least
+three sources of endogeneity: reverse causation (conflict destroys
+output), measurement error in low-income GDP statistics, and omitted
+country traits correlated with both. \citet{MSS2004} address all
+three by instrumenting GDP-per-capita growth with year-on-year
+rainfall growth, arguing that in agriculture-dependent African
+economies rainfall fluctuations are quasi-random shifters of output
+that satisfy both relevance and the exclusion restriction.
+
+The MSS finding that a five-percentage-point decline in growth raises
+the probability of civil conflict by some twelve percentage
+points has been hugely influential, but has also drawn scrutiny.
+\citet{Ciccone2011} argues that the link works through rainfall
+\emph{levels} rather than growth, and \citet{Sarsons2015} documents
+that rainfall predicts conflict downstream of dams that physically
+break the agricultural-income channel, casting doubt on the
+exclusion restriction.
+
+This paper has two purposes. First, we conduct a careful applied
+econometric replication of \citet{MSS2004} that systematically
+applies the obtained diagnostics: heteroscedasticity tests, fixed- versus random-effects
+choice, weak-instrument tests, overidentification tests,
+weak-IV-robust inference, cluster bootstraps, and a control-function
+probit. Second, recognising that conflict is highly persistent and
+that the rainfall instruments are fragile, we extend the analysis
+to a dynamic-panel system-GMM estimator
+\citep{ArellanoBond1991,BlundellBond1998} that exploits the panel's
+longitudinal structure rather than relying on external instruments.
+Our central message is methodological: the MSS conclusion receives
+qualified support, but the rainfall instrument is too fragile to
+provide compelling causal evidence on its own. The contrast between
+specifications is instructive for any applied researcher confronting
+a single, marginally relevant instrument.
+
+% ===========================================================================
+\section{Conceptual framework}\label{sec:concept}
+% ===========================================================================
+We adopt the simple ``opportunity-cost'' mechanism of
+\citet{Grossman1991} and \citet{ChassangPadroMiquel2009}.
+Individuals decide between productive labour, with expected wage $w$
+proportional to current income $y$, and predation, with expected
+return $\pi$ that is largely independent of $y$. Whenever
+$w(y)<\pi$ predation strictly dominates; the conflict-participation
+margin is therefore decreasing in $y$. Taking logarithms and first
+differences yields the linear approximation
+\begin{equation}\label{eq:struct}
+   C_{it} = \alpha_i + \delta_t + \beta\, g^{y}_{it}
+            + \gamma\,X_{it} + u_{it},
+\end{equation}
+where $C_{it}=\mathbf{1}\{\text{conflict}_{it}\}$ is a binary
+indicator of civil conflict in country $i$ and year $t$,
+$g^{y}_{it}=\Delta\ln(y_{it})$ is annual per-capita GDP growth,
+$X_{it}$ collects time-varying controls (here lagged
+democracy/Polity\,2), and $\alpha_i$, $\delta_t$ are country and
+year fixed effects. Theory predicts $\beta<0$.
+
+The empirical challenge is identification of $\beta$: $g^{y}_{it}$
+is plausibly endogenous to $u_{it}$. \citet{MSS2004}'s solution is
+to instrument $g^{y}_{it}$ with rainfall growth $g^{R}_{it}$ and its
+one-period lag. Identification requires (i) \emph{relevance}:
+rainfall shifts agricultural output and hence GDP growth, and
+(ii) \emph{validity/exclusion?}: rainfall affects conflict only through GDP.
+Both assumptions are testable to varying degrees; we report a range
+of formal diagnostics below.
+
+% ===========================================================================
+\section{Data}\label{sec:data}
+% ===========================================================================
+We use the replication panel distributed by Edward Miguel through the
+Harvard Dataverse (\texttt{doi:10.7910/DVN/27324}), covering 41
+sub-Saharan African countries from 1981 to 1999. After constructing
+one lag of GDP growth and dropping country-years with missing
+controls, our estimation sample is 702 country-year observations
+across 41 countries and 18 years (an unbalanced panel). The dependent
+variable \texttt{any\_prio} is a PRIO indicator equal to one if a
+country experiences at least 25 battle deaths in a given year. The
+endogenous regressor is annual GDP-per-capita growth \texttt{gdp\_g};
+the excluded instruments are current and lagged rainfall growth
+\texttt{GPCP\_g} and \texttt{GPCP\_g\_l}, constructed from the Global
+Precipitation Climatology Project. Controls follow MSS: initial log
+income, lagged Polity\,2, ethnic and religious fractionalisation, an
+oil-exporter dummy, log mountainous terrain, and log lagged
+population. Table~\ref{tab:desc} reports descriptive statistics. The
+unconditional conflict frequency is 26.9\%, average growth is
+slightly negative ($-0.6\%$ p.a.), and the panel is democracy-poor
+(mean Polity\,2 of $-3.5$).
+
+\begin{table}[H]
+\centering\small
+\caption{Descriptive statistics, estimation sample ($N=702$)}\label{tab:desc}
+\begin{tblr}{lrrrrr}
+\toprule
+Variable & $N$ & Mean & SD & Min & Max\\
+\midrule
+\texttt{any\_prio}  & 702 &  0.269 & 0.444 &  0.000 & 1.000\\
+\texttt{gdp\_g}     & 702 & $-0.006$ & 0.066 & $-0.474$ & 0.319\\
+\texttt{GPCP\_g}    & 702 &  0.015 & 0.210 & $-0.550$ & 1.680\\
+\texttt{y\_0}       & 702 &  1.16  & 0.90  &  0.316 & 4.84\\
+\texttt{polity2l}   & 702 & $-3.55$ & 5.55  & $-10$  & 9\\
+\texttt{ethfrac}    & 702 &  0.655 & 0.237 &  0.036 & 0.925\\
+\texttt{relfrac}    & 702 &  0.487 & 0.185 &  0.000 & 0.783\\
+\texttt{Oil}        & 702 &  0.117 & 0.321 &  0     & 1\\
+\texttt{lmtnest}    & 702 &  1.58  & 1.43  &  0     & 4.42\\
+\texttt{lpopl1}     & 702 &  8.77  & 1.20  &  5.75  & 11.7\\
+\bottomrule
+\end{tblr}
+\end{table}
+
+% ===========================================================================
+\section{Econometric specification and methods}\label{sec:methods}
+% ===========================================================================
+Our reasoning proceeds in five steps that mirror the choices
+recommended in \citet{Wooldridge2010}.
+
+\paragraph{(1) Pooled OLS as benchmark.}
+We first estimate equation~(\ref{eq:struct}) by Pooled OLS with the
+full set of (time-invariant) controls. Because the outcome is binary
+this is a Linear Probability Model (LPM) and is heteroscedastic by
+construction with $\mathrm{Var}(u_{it})=p_{it}(1-p_{it})$. We test
+heteroscedasticity formally with the Breusch--Pagan test and a White
+test in the \citet{Wooldridge2010} simplified form, and always report
+cluster-robust standard errors clustered at the country level.
+
+\paragraph{(2) Fixed versus random effects.}
+The within transformation absorbs the time-invariant controls
+(\texttt{y\_0}, \texttt{ethfrac}, \texttt{relfrac}, \texttt{Oil},
+\texttt{lmtnest}, \texttt{lpopl1}); we therefore restrict the FE and
+RE specifications to time-varying covariates and add year fixed
+effects. The presence of country effects is checked with an
+$F$-test, and we report the Hausman test of the orthogonality of the
+RE-assumed effects to the regressors.
+
+\paragraph{(3) Two-stage least squares.}
+We then implement the MSS IV approach with $\{$\texttt{GPCP\_g},
+\texttt{GPCP\_g\_l}$\}$ as excluded instruments for \texttt{gdp\_g}.
+We report the cluster-robust first-stage $F$ on the excluded
+instruments and compare it to the Stock-Yogo critical value (19.93
+for 10\% maximum size with two IVs and one endogenous regressor).
+We additionally report the Wu-Hausman endogeneity test, the
+Sargan/Hansen overidentification test, and the weak-IV-robust
+Anderson--Rubin (AR) confidence set, which retains correct coverage
+under arbitrarily weak first stages.
+
+\paragraph{(4) Robustness: country trends.}
+Because our two-way FE specification produces a markedly weaker first
+stage than the original MSS paper, we re-estimate the 2SLS adding
+country-specific linear time trends in place of year fixed effects,
+the original MSS choice. This sharpens identification by removing
+slow country-level secular movements (democratisation, technology
+diffusion) without absorbing the rainfall variation.
+
+\paragraph{(5) Dynamic robustness: control function and System-GMM.}
+Two further specifications relax the static-binary form. First, we
+re-estimate~(\ref{eq:struct}) as a probit with a Rivers-Vuong
+control function, plugging in the first-stage residuals as an extra
+regressor and reading the $z$-statistic on the residual as a
+Hausman-style test of exogeneity \citep{Wooldridge2010}. We prefer
+this approach to direct IV-Probit maximum likelihood because, with
+41 country dummies and $T=18$, the latter is exposed to
+incidental-parameters bias. Second, recognising that conflict is highly
+serially correlated, we estimate dynamic specifications including
+$C_{i,t-1}$ as a regressor. Within-FE on a dynamic panel suffers
+from \citet{Nickell1981} bias of order $O(1/T)$, which with $T=18$
+remains non-trivial; we therefore use difference-GMM
+\citep{ArellanoBond1991} and system-GMM \citep{BlundellBond1998}
+estimators with collapsed instrument matrices and lag depth two
+through three to keep the instrument count well below $N=41$
+\citep{Roodman2009}. Two-step robust standard errors are reported.
+We assess validity with the Sargan test on overidentifying
+restrictions and the Arellano-Bond AR(1) and AR(2) tests for
+autocorrelation in the differenced residuals.
+
+% ===========================================================================
+\section{Results}\label{sec:results}
+% ===========================================================================
+\subsection{Main estimates}
+Table~\ref{tab:main} collects the seven static specifications.
+Pooled-OLS column (1) reproduces the headline MSS direction: a one
+standard-deviation drop in growth ($\approx 6.6$ percentage points)
+raises the conflict probability by roughly $0.51\times 0.066\approx
+3.4$ percentage points, statistically significant at the 5\% level.
+Two-way fixed-effects column (2) and random-effects column (3)
+shrink the coefficient towards zero ($\hat\beta=-0.46$, $-0.44$)
+with slightly widened standard errors, as expected when we strip out
+between-country variation. The Hausman test fails to reject RE
+($p=0.998$); but the $F$-test for country effects is large
+($F=14.9$, $p<0.001$); given the strong rejection of pooling,
+we maintain FE as the preferred estimator. The reduced-form column (4)
+shows that rainfall growth enters the conflict equation only weakly
+(lagged rainfall has $p=0.08$); the first stage column (5) confirms
+that current-year rainfall growth has a statistically significant
+but quantitatively modest effect on GDP growth.
+
+Column (6), our baseline 2SLS, is the most striking result. The
+point estimate on \texttt{gdp\_g} is $+0.14$ with a clustered
+standard error of $1.33$: the wrong sign, no statistical
+significance, and a confidence interval covering essentially all
+economically relevant magnitudes. This collapse of the IV estimate
+relative to the well-determined POLS estimate is the canonical
+fingerprint of a weak instrument. Column (7) re-estimates the same
+model with country FE plus country-specific linear time trends---the
+MSS specification---and yields $\hat\beta=-1.30$ (SE $1.07$,
+$p=0.23$): the correct (negative) sign, larger in magnitude than
+OLS, but still imprecisely estimated. The qualitative direction of
+the original MSS finding is therefore highly sensitive to whether
+secular country-level trends are modelled.
+
+% Table inserted from the analysis script
+\begin{table}[H]
+\centering
+\small
+\input{tables/main_results.tex}
+\caption{Effect of GDP growth on civil conflict in Africa, 1981--1999. Models~(1)--(6) include year fixed effects (where applicable); model~(7) replaces year FE with country-specific linear time trends. Cluster-robust SE in parentheses.}
+\label{tab:main}
+\end{table}
+
+\subsection{Specification diagnostics}
+Table~\ref{tab:diag} reports the formal diagnostics, grouped by what
+they test.
+
+\emph{Heteroscedasticity.}
+The Breusch--Pagan test overwhelmingly rejects ($\chi^2=142.5$,
+$p<10^{-16}$), confirming the necessity of robust standard errors in
+the LPM.
+
+\emph{Panel structure.}
+The $F$-test of country fixed effects strongly rejects the null
+that they are jointly zero ($F=14.9$, $p<10^{-16}$); the Hausman
+test does not distinguish FE from RE ($p=0.998$). The classical
+Hausman statistic is, however, unreliable in this setting: its
+construction assumes that the FE estimator is efficient under
+$H_0$, which fails once standard errors are clustered, and the test
+also has limited power in moderately unbalanced panels. We
+therefore default to FE following \citet{Wooldridge2010}.
+
+\emph{Weak instruments.}
+The cluster-robust first-stage $F$ on the two excluded instruments
+is just $2.89$ in our baseline 2-way FE specification, far below
+the \citet{StaigerStock1997} rule-of-thumb of 10 or the
+Stock--Yogo \citep{StockYogo2005} 10\%-maximum-size threshold of
+19.93 (the corresponding 10\%-relative-bias critical value is
+$\approx 11$, which the baseline $F$ also fails to meet). Switching to the MSS-style country-trend specification
+lifts the $F$ to $4.45$ (cluster-robust Wald) or $7.48$
+(homoscedastic $F$), notably stronger but still below conventional
+thresholds.
+
+\emph{Endogeneity.}
+The Wu-Hausman exogeneity test fails to reject ($\chi^2=0.14$,
+$p=0.71$); the control-function probit residual $\hat v$ is
+statistically insignificant ($z=-0.73$, $p=0.46$). In this sample
+we have no positive evidence that OLS is inconsistent.
+
+\emph{Overidentification.}
+The Sargan test for the two-instrument design does not reject
+($\chi^2=2.40$, $p=0.12$), but with only one overidentifying
+restriction this test has low power and provides only weak
+reassurance about the exclusion restriction.
+
+\emph{Weak-IV-robust inference.}
+The Anderson-Rubin 95\% confidence set for $\beta$ is
+$[-4.41,\,7.49]$, essentially uninformative about either the sign or
+the magnitude of the structural parameter. A non-parametric cluster
+bootstrap (500 replications, resampling countries with replacement)
+yields a closely comparable percentile interval of $[-3.52,\,3.51]$.
+
+\begin{table}[H]
+\centering\small
+\caption{Specification and identification diagnostics}\label{tab:diag}
+\begin{tblr}{lrr}
+\toprule
+Statistic & Value & $p$-value \\
+\midrule
+\SetCell[c=3]{l}\textit{Heteroscedasticity} & & \\
+Breusch--Pagan                                     & $142.52$ & $<10^{-16}$\\
+\midrule
+\SetCell[c=3]{l}\textit{Panel structure} & & \\
+$F$-test country FE (H$_0$: $c_i=0$)               & $14.90$  & $<10^{-16}$\\
+Hausman FE vs RE                                   &  $0.04$  & $0.998$ \\
+\midrule
+\SetCell[c=3]{l}\textit{Weak instruments} & & \\
+First-stage $F$ baseline (cluster-robust)          &  $2.89$  & $0.056$ \\
+First-stage $F$ MSS-trends (cluster-robust Wald)   &  $4.45$  & $0.012$ \\
+First-stage $F$ MSS-trends (homoscedastic)         &  $7.48$  & $0.0006$ \\
+Stock--Yogo 10\%-maximum-size critical value      & $19.93$  & --- \\
+\midrule
+\SetCell[c=3]{l}\textit{Endogeneity} & & \\
+Wu--Hausman (AER \texttt{ivreg})                   &  $0.14$  & $0.705$ \\
+Control-function probit $z(\hat v)$                & $-0.73$  & $0.464$ \\
+\midrule
+\SetCell[c=3]{l}\textit{Overidentification} & & \\
+Sargan (AER \texttt{ivreg})                        &  $2.40$  & $0.121$ \\
+\midrule
+\SetCell[c=3]{l}\textit{Weak-IV-robust inference} & & \\
+Anderson--Rubin 95\% CI for $\beta$                & $[-4.41,\,7.49]$ & --- \\
+Cluster-bootstrap 95\% CI for $\beta^{IV}$         & $[-3.52,\,3.51]$ & --- \\
+\bottomrule
+\end{tblr}
+\end{table}
+
+\subsection{Robustness: dynamic panel-data estimators}
+The dynamic-panel results in Table~\ref{tab:gmm} are the most
+encouraging for the substantive MSS conclusion. The lagged conflict
+indicator carries a large and highly significant coefficient
+($0.63$, $p<0.001$ in system-GMM), confirming substantial conflict
+persistence and indicating that the static specifications are
+mis-specified. Conditional on this dynamic structure, the
+Arellano-Bond estimator delivers $\hat\beta=-0.29$ with $p=0.046$;
+the Blundell-Bond system-GMM yields a similar point estimate
+$\hat\beta=-0.30$ but no longer statistically significant
+($p=0.19$). The Sargan tests do not reject ($p=0.51$ and $0.09$
+respectively); AR(2) tests do not detect second-order
+autocorrelation in differences ($p=0.50$ and $0.47$); both
+validations support the identifying restrictions. The qualitative
+MSS result: a negative relationship between growth and
+conflict, thus reappears once the dynamic structure of conflict is
+properly modelled, even without an external instrument.
+
+\begin{table}[H]
+\centering
+\small
+\input{tables/gmm_results.tex}
+\caption{Dynamic panel-data estimators of conflict on growth. Two-step robust standard errors. Collapsed instrument matrix with lag depth 2--3.}
+\label{tab:gmm}
+\end{table}
+
+% ===========================================================================
+\section{Discussion and conclusion}\label{sec:conc}
+% ===========================================================================
+This essay illustrates a tension that recurs in applied
+microeconometrics: a story that is compelling, theoretically well
+motivated and empirically detectable in OLS does not always survive
+strict instrumental-variables identification. Four lessons stand
+out.
+
+First, the rainfall instruments are markedly weaker in our two-way
+FE specification ($F=2.89$) than under the MSS country-trends design
+($F=4.45$). This is a useful reminder that the strength of an
+instrument is specification-dependent, and that seemingly small
+modelling choices (year fixed effects versus country trends)
+materially change identification.
+
+Second, when an instrument is weak, conventional 2SLS $t$-statistics
+are unreliable and the only valid inference is weak-IV-robust
+\citep{AndersonRubin1949,StaigerStock1997}. Reporting only the
+2SLS point estimate would have been misleading: our baseline 2SLS
+estimate is positive while every other reasonable specification
+points negative. The Anderson-Rubin confidence set, which makes no
+strength-of-identification assumption, is consequently very wide.
+
+Third, the Wu-Hausman test and the control-function probit residual
+both fail to reject exogeneity of GDP growth. Combined with the
+weak first stage, this would justify reporting the well-determined
+POLS estimate of $-0.51$ as the most defensible point estimate in
+this sample, treating the IV strategy as an inconclusive robustness
+check rather than the primary identification.
+
+Fourth, leveraging the panel dimension via dynamic-panel GMM offers
+an identification route that does not depend on an external
+instrument at all. Conditional on lagged conflict, both
+Arellano-Bond and Blundell-Bond recover negative growth
+coefficients near $-0.30$, the first significant at the 5\% level.
+Our overall reading is that MSS's substantive conclusion, namely that adverse
+economic shocks raise the probability of civil conflict in
+Africa, receives qualified support, but the rainfall instrument is
+too fragile to provide compelling causal evidence on its own.
+
+Limitations of our analysis include the binary measure of conflict
+(LPM versus probit/logit), the focus on contemporaneous shocks
+(richer distributed lags are plausible), and the omission of
+conflict-spillover spatial dynamics emphasised in subsequent
+literature. Each of these would be natural extensions for a
+longer-form study.
+
+% ---------------------- bibliography ----------------------
+\renewcommand{\refname}{References}
+\begin{thebibliography}{99}\small
+
+\bibitem[Anderson and Rubin(1949)]{AndersonRubin1949}
+Anderson, T.W., and H.\ Rubin (1949). ``Estimation of the parameters
+  of a single equation in a complete system of stochastic equations.''
+  \emph{Annals of Mathematical Statistics} 20(1): 46--63.
+
+\bibitem[Arellano and Bond(1991)]{ArellanoBond1991}
+Arellano, M., and S.\ Bond (1991). ``Some tests of specification for
+  panel data: Monte Carlo evidence and an application to employment
+  equations.'' \emph{Review of Economic Studies} 58(2): 277--297.
+
+\bibitem[Blundell and Bond(1998)]{BlundellBond1998}
+Blundell, R., and S.\ Bond (1998). ``Initial conditions and moment
+  restrictions in dynamic panel data models.''
+  \emph{Journal of Econometrics} 87(1): 115--143.
+
+\bibitem[Chassang and Padr\'o i Miquel(2009)]{ChassangPadroMiquel2009}
+Chassang, S., and G.\ Padr\'o i Miquel (2009). ``Economic shocks and
+  civil war.'' \emph{Quarterly Journal of Political Science} 4(3):
+  211--228.
+
+\bibitem[Ciccone(2011)]{Ciccone2011}
+Ciccone, A.\ (2011). ``Economic shocks and civil conflict: A
+  comment.'' \emph{American Economic Journal: Applied Economics}
+  3(4): 215--227.
+
+\bibitem[Grossman(1991)]{Grossman1991}
+Grossman, H.I.\ (1991). ``A general equilibrium model of
+  insurrections.'' \emph{American Economic Review} 81(4): 912--921.
+
+\bibitem[Miguel et al.(2004)]{MSS2004}
+Miguel, E., S.\ Satyanath, and E.\ Sergenti (2004). ``Economic
+  shocks and civil conflict: An instrumental variables approach.''
+  \emph{Journal of Political Economy} 112(4): 725--753.
+
+\bibitem[Nickell(1981)]{Nickell1981}
+Nickell, S.\ (1981). ``Biases in dynamic models with fixed
+  effects.'' \emph{Econometrica} 49(6): 1417--1426.
+
+\bibitem[Roodman(2009)]{Roodman2009}
+Roodman, D.\ (2009). ``A note on the theme of too many instruments.''
+  \emph{Oxford Bulletin of Economics and Statistics} 71(1): 135--158.
+
+\bibitem[Sarsons(2015)]{Sarsons2015}
+Sarsons, H.\ (2015). ``Rainfall and conflict: A cautionary tale.''
+  \emph{Journal of Development Economics} 115: 62--72.
+
+\bibitem[Staiger and Stock(1997)]{StaigerStock1997}
+Staiger, D., and J.H.\ Stock (1997). ``Instrumental variables
+  regression with weak instruments.'' \emph{Econometrica} 65(3):
+  557--586.
+
+\bibitem[Stock and Yogo(2005)]{StockYogo2005}
+Stock, J.H., and M.\ Yogo (2005). ``Testing for weak instruments in
+  linear IV regression.'' In: \emph{Identification and Inference for
+  Econometric Models: Essays in Honor of Thomas Rothenberg}, ed.\
+  D.W.K.\ Andrews and J.H.\ Stock, Cambridge University Press,
+  80--108.
+
+\bibitem[Wooldridge(2010)]{Wooldridge2010}
+Wooldridge, J.M.\ (2010). \emph{Econometric Analysis of Cross
+  Section and Panel Data.} 2nd ed., MIT Press.
+
+\end{thebibliography}
+
+\end{document}
