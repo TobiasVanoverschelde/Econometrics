@@ -35,10 +35,22 @@
 \begin{document}
 \maketitle
 
-% Abstract written last; placeholder for now.
-% \begin{abstract}
-% \noindent ...
-% \end{abstract}
+\begin{abstract}
+\noindent
+We re-examine the rainfall-instrumental-variables design of
+\citet{MSS2004} using post-2005 weak-instrument diagnostics and an
+alternative panel identification strategy taught in our course. On the
+original panel of 41 sub-Saharan African countries (1981--1999), the
+rainfall first stage fails the \citet{StockYogo2005} 10\%-maximum-size
+critical value by a factor of seven; the 2SLS point estimate carries
+the wrong sign and a cluster-bootstrap percentile interval that
+covers the entire interesting parameter space. A first-difference IV
+with the lagged growth level \citep{AndersonHsiao1981}, which does not
+depend on rainfall, recovers the negative MSS sign ($\hat\beta_{AH} =
+-0.35$) but with comparable imprecision. The data inform the sign of
+the income-conflict relationship but not its magnitude under either
+identifying assumption available within the original design.
+\end{abstract}
 
 % ===========================================================================
 \section{Introduction}\label{sec:intro}
@@ -70,9 +82,11 @@ restriction directly, exploiting irrigation infrastructure that breaks
 the agricultural channel.
 
 We revisit MSS with two questions. First, how much the original
-rainfall design tells us about $\beta$ once modern weak-instrument
-diagnostics are applied. Second, whether a dynamic-panel identification
-strategy that does not rely on rainfall recovers a coherent estimate.
+rainfall design tells us about $\beta$ once weak-instrument diagnostics
+and a cluster bootstrap are applied to the standard 2SLS output.
+Second, whether a first-difference IV strategy with lagged levels
+\citep{AndersonHsiao1981}, which does not rely on rainfall, recovers
+a coherent estimate.
 
 Section~\ref{sec:identification} formalises the MSS identification.
 Section~\ref{sec:critiques} surveys the critiques.
@@ -189,28 +203,29 @@ over-identification test on the two rainfall instruments
 (current and lagged); we return to it in Section~\ref{sec:results}.
 
 \textbf{Specification critique.} \citet{Ciccone2011} attacks the
-functional form rather than the exogeneity. Rainfall is mean-reverting:
-an unusually wet year tends to be followed by drier years, so rainfall
-growth carries a mechanical negative serial correlation with the past
-level of rainfall. If conflict responds to rainfall \emph{levels}
-(drought leads to a bad harvest, which raises conflict), then
-instrumenting growth with rainfall growth captures a level-driven
-effect dressed up as a growth effect. He re-runs the analysis with
-rainfall levels as the IV and finds the effect attenuates substantially.
-\citet{MiguelSatyanath2011} reply defending the original parameterisation.
-The lesson is generic: 2SLS consistency requires correct first-stage
-specification, not just instrument exogeneity. An exogenous instrument
-applied in the wrong functional form still produces an inconsistent
-estimate.
+functional form rather than the exogeneity. He shows that the original
+MSS result stems from a counterintuitive \emph{positive} correlation
+between conflict at $t$ and rainfall levels at $t-2$, rather than from
+negative rainfall shocks lowering income and raising conflict through
+the agricultural channel. Re-examining the analysis with updated data,
+he reports that conflict is largely unrelated to rainfall.
+\citet{MiguelSatyanath2011} reply showing that the MSS findings hold
+when rainfall levels are used as instruments, and that the first-stage
+relationship weakens after 2000. The lesson is generic: an exogenous
+instrument applied in the wrong functional form still produces an
+inconsistent estimate.
 
 \textbf{Direct test of exclusion.} The most consequential critique
-tests the exclusion restriction itself. \citet{Sarsons2015} uses Indian
-rainfall and conflict data combined with records of irrigation dams.
-In regions \emph{downstream of dams}, water supply is decoupled from
-local rainfall: the agricultural-income channel is physically broken.
+tests the exclusion restriction itself. \citet{Sarsons2015} uses
+Indian district-level data on rainfall and Hindu-Muslim religious
+riots, combined with records of irrigation dams. In districts
+\emph{downstream of dams}, water supply is decoupled from local
+rainfall: income in these districts is much less sensitive to rainfall
+fluctuations, so the agricultural channel is mechanically attenuated.
 If MSS's exclusion holds (rainfall affects conflict only through
-agricultural income), then in dam-downstream regions rainfall should
-not predict conflict. She finds that it does. The implication is a
+agricultural income), then in dam-downstream districts rainfall should
+not predict conflict. She finds that rain shocks remain equally strong
+predictors of riot incidence in downstream districts. The implication is a
 direct $z \to y_1$ arrow that the MSS DAG denies (Figure~\ref{fig:dag-sarsons}).
 
 \begin{figure}[H]
@@ -300,37 +315,351 @@ Polity~2 of $-3.5$ on a scale of $-10$ to $10$).
 % ===========================================================================
 \section{Methodology}\label{sec:methods}
 % ===========================================================================
-% TODO: POLS, FE/RE, 2SLS, LIML/Fuller, AR, dynamic-panel GMM
-% each tied to the DAG, with the assumption + diagnostic test it warrants.
+Each estimator below corresponds to a different way of reading the DAG
+in Figure~\ref{fig:dag-mss}. POLS uses all variation jointly and
+trusts that the dashed $u \to y_2$ and $u \to y_1$ arrows are weak.
+FE removes the time-invariant part of $u$. 2SLS exploits the $z \to
+y_2$ arrow and assumes no direct $z \to y_1$ arrow. The cluster
+bootstrap provides an alternative inference for $\hat\beta_{\text{2SLS}}$
+when conventional asymptotics are unreliable. First-difference IV with
+lagged levels identifies $\beta$ without using $z$ at all, relying on
+internal panel variation instead.
+
+\subsection{Pooled OLS (LPM)}\label{sec:pols}
+
+We begin by estimating equation~\eqref{eq:structural} by OLS, treating
+the binary outcome as a linear probability model. In subscript form,
+\[
+\hat\beta_{\text{POLS}}
+   = \Big( \textstyle\sum_{it} x_{it} x_{it}' \Big)^{-1}
+     \textstyle\sum_{it} x_{it} C_{it}
+\quad\Longleftrightarrow\quad
+\hat\beta_{\text{POLS}} = (X'X)^{-1} X' C,
+\]
+where the right-hand expression stacks all $NT$ observations into
+matrices $X$ and $C$. Consistency requires
+$\mathrm{Cov}(g^{y}_{it}, u_{it}) = 0$, which the three endogeneity
+sources in Section~\ref{sec:intro} rule out. POLS
+therefore serves as a benchmark, not as a causal estimate. Two issues
+are handled at the inference stage. First, the LPM is heteroscedastic
+by construction since $\mathrm{Var}(u \mid x) = p(x)(1-p(x))$ depends
+on $x$; we report the Breusch-Pagan and White tests as confirmation.
+Second, errors are correlated within country across years; we cluster
+standard errors at the country level throughout.
+
+\subsection{Fixed and random effects}\label{sec:fe}
+
+Fixed-effects estimation removes the time-invariant part of $u$. Let
+$u_{it} = c_i + e_{it}$ with $c_i$ constant within country. The within
+transformation subtracts country means from each variable: let
+$\tilde y_{it} = y_{it} - \bar y_i$ and $\tilde x_{it} = x_{it} - \bar
+x_i$. The resulting estimator is
+\[
+\hat\beta_{\text{FE}}
+   = \Big( \textstyle\sum_{it} \tilde x_{it} \tilde x_{it}' \Big)^{-1}
+     \textstyle\sum_{it} \tilde x_{it} \tilde y_{it},
+\]
+which is consistent if $\mathrm{Cov}(g^{y}_{it}, e_{it}) = 0$ after
+demeaning. We report two-way FE (country and year) as our baseline and
+add a specification with country-specific linear trends in place of
+year FE, the original MSS choice. The two differ in how they treat the
+common component of rainfall variation across the panel: year FE
+absorb it, country trends preserve it.
+
+Random effects is consistent under the stronger assumption
+$\mathrm{Cov}(c_i, x_{it}) = 0$ and is more efficient when it holds.
+The Hausman test compares FE and RE: a large $\chi^2$ statistic
+indicates the RE assumption fails. Time-invariant controls (initial
+income, fractionalisation, terrain, oil, lagged population) are
+absorbed by country FE and do not appear in the FE or RE
+specifications.
+
+\subsection{Two-stage least squares}\label{sec:2sls}
+
+We then implement the MSS strategy: instrument $g^{y}_{it}$ with
+current and lagged rainfall growth from equation~\eqref{eq:firststage}.
+As a two-stage procedure, run the first stage in
+equation~\eqref{eq:firststage} by OLS to obtain fitted values
+$\hat g^{y}_{it}$, then plug those into the structural equation:
+\[
+C_{it} = \alpha_i + \lambda_i t + \beta\, \hat g^{y}_{it}
+       + \gamma' X_{it} + \text{error}_{it}.
+\]
+In matrix form this is equivalent to
+\[
+\hat\beta_{\text{2SLS}} = (X' P_Z X)^{-1} X' P_Z C,
+\]
+where $P_Z = Z(Z'Z)^{-1} Z'$ projects onto the column space of the
+instruments (country FE and exogenous controls included in $Z$). Two
+assumptions support consistency.
+
+\textit{Relevance.} We test it through the cluster-robust $F$ statistic
+on the excluded instruments in the first stage, compared to the
+\citet{StockYogo2005} 10\%-maximum-size critical value of 19.93 (two
+IVs, one endogenous regressor). Values below the threshold indicate
+weak instruments and invalid conventional standard errors.
+
+\textit{Exclusion.} Not directly testable. With two instruments we
+report the Sargan over-identification test, which asks whether both
+rainfall measures imply the same $\beta$. Rejection indicates that at
+least one instrument is correlated with $u$. Failure to reject is weak
+evidence at best given the single degree of freedom and the fact that
+both instruments share the same exogeneity argument; the test cannot
+detect homogeneous invalidity.
+
+We additionally report the Wu-Hausman endogeneity test, which compares
+OLS and 2SLS and rejects exogeneity of $g^{y}_{it}$ if the two
+estimates differ by more than sampling noise.
+
+\subsection{Cluster bootstrap inference}\label{sec:boot}
+
+When the first-stage $F$ falls short of conventional critical values,
+the standard 2SLS $t$-statistic does not have an asymptotic standard
+normal distribution and reported confidence intervals can have actual
+coverage far below their nominal level. We supplement the conventional
+output with a non-parametric cluster bootstrap. Countries are resampled
+with replacement, the 2SLS coefficient is re-estimated on each
+resampled panel, and the percentile interval is reported from $B=500$
+replications. Resampling at the country level preserves the
+within-country correlation structure that the cluster-robust standard
+errors of Section~\ref{sec:pols} assume.
+
+\subsection{First-difference IV with lagged levels}\label{sec:ahiv}
+
+If rainfall is too weak to identify $\beta$ externally, the panel
+itself contains a second source of variation. First-differencing
+equation~\eqref{eq:structural} eliminates the country fixed effects:
+\[
+\Delta C_{it} = \beta\, \Delta g^{y}_{it} + \gamma' \Delta X_{it}
+              + \Delta u_{it}.
+\]
+\citet{AndersonHsiao1981} propose instrumenting the differenced
+regressor $\Delta g^{y}_{it}$ with its lagged level $g^{y}_{i,t-1}$,
+under the assumption $\mathrm{Cov}(g^{y}_{i,t-1},\Delta u_{it}) = 0$:
+past growth is uncorrelated with the change in unobserved conflict
+shocks. This identifying assumption is logically separate from the
+rainfall exclusion restriction; the two strategies fail or succeed for
+different reasons. The Sargan and Wu-Hausman diagnostics from
+Section~\ref{sec:2sls} apply unchanged.
 
 % ===========================================================================
 \section{Results and diagnostics}\label{sec:results}
 % ===========================================================================
-% TODO: main results table + diagnostics table + interpretation.
+Table~\ref{tab:main} reports the seven static specifications described
+in Section~\ref{sec:methods}. Tables~\ref{tab:diag}
+and~\ref{tab:gmm} report the diagnostic battery and the dynamic-panel
+GMM estimates.
+
+\begin{table}[H]
+\centering
+\caption{Static specifications. Cluster-robust SE at country level in
+parentheses. Models 2--6 use two-way FE; model~7 replaces year FE with
+country-specific linear time trends. Time-invariant controls are
+included in POLS only and absorbed by country FE elsewhere.}
+\label{tab:main}
+\small
+\begin{tabular}{lrrrrrrr}
+\toprule
+ & POLS & FE & RE & Red.\ form & First stage & 2SLS & 2SLS \\
+ & (LPM) & 2-way & 2-way & & & & (trends) \\
+\midrule
+GDP growth        & $-0.507^{**}$ & $-0.460^{**}$ & $-0.443^{**}$ &        &              & $0.141$       & $-1.297$ \\
+                  & $(0.222)$     & $(0.220)$     & $(0.217)$     &        &              & $(1.330)$     & $(1.071)$ \\
+GDP growth (lag)  & $0.020$       & $-0.173$      & $-0.121$      &        &              & $-0.165$      & $0.040$ \\
+                  & $(0.243)$     & $(0.221)$     & $(0.277)$     &        &              & $(0.229)$     & $(0.185)$ \\
+Rainfall growth   &               &               &               & $0.024$ & $0.042^{**}$ &              &  \\
+                  &               &               &               & $(0.055)$ & $(0.018)$  &              &  \\
+Rainfall growth (lag) &           &               &               & $-0.084^{*}$ & $0.025$ &              &  \\
+                  &               &               &               & $(0.048)$ & $(0.016)$  &              &  \\
+Polity~2 (lag)    & $0.000$       & $-0.004$      & $-0.002$      & $-0.003$ & $-0.001^{*}$ & $-0.003$    & $-0.004$ \\
+                  & $(0.004)$     & $(0.005)$     & $(0.005)$     & $(0.005)$ & $(0.001)$   & $(0.006)$   & $(0.005)$ \\
+\midrule
+$N$               & 702 & 702 & 702 & 702 & 702 & 702 & 702 \\
+$R^2$             & 0.129 & 0.012 & 0.006 & 0.005 & 0.019 & 0.569 & 0.710 \\
+\bottomrule
+\end{tabular}\\[2pt]
+\footnotesize $^{*}p<0.1$, $^{**}p<0.05$, $^{***}p<0.01$.
+\end{table}
+
+POLS reproduces the MSS direction: a one-standard-deviation drop in
+growth ($\approx 6.6$ percentage points) raises the conflict
+probability by $0.51 \times 0.066 \approx 3.4$ percentage points,
+significant at the 5\% level. FE and RE shrink the coefficient slightly
+towards zero ($\hat\beta = -0.46, -0.44$) with widened standard errors,
+as expected when between-country variation is stripped out. The reduced
+form shows that rainfall growth enters the conflict equation only
+weakly (lagged rainfall has $p = 0.08$). The first stage confirms that
+current-year rainfall growth has a statistically significant but
+quantitatively modest effect on GDP growth.
+
+The 2SLS estimate (column 6) is the striking column. The point estimate
+is $+0.14$ with a cluster-robust SE of $1.33$: the wrong sign, no
+statistical significance, and a confidence interval covering essentially
+all economically relevant magnitudes. This collapse of the IV estimate
+relative to the well-determined POLS estimate is the canonical
+fingerprint of a weak instrument. Column~7 re-estimates the same model
+with country FE plus country-specific linear time trends (the MSS
+specification) and recovers $\hat\beta = -1.30$ (SE $1.07$, $p = 0.23$):
+the correct sign, larger in magnitude than OLS, but still imprecisely
+estimated. The qualitative direction of MSS is therefore sensitive to
+whether secular country-level trends are modelled.
+
+\begin{table}[H]
+\centering
+\caption{Specification and identification diagnostics.}
+\label{tab:diag}
+\small
+\begin{tabular}{lrr}
+\toprule
+Statistic & Value & $p$-value \\
+\midrule
+\textit{Heteroscedasticity} & & \\
+Breusch--Pagan                                       & $142.52$ & $<10^{-16}$ \\
+\textit{Panel structure} & & \\
+$F$-test country FE ($H_0\colon c_i=0$)              & $14.90$  & $<10^{-16}$ \\
+Hausman FE vs RE                                     & $0.04$   & $0.998$ \\
+\textit{Weak instruments} & & \\
+First-stage $F$ baseline (cluster-robust)            & $2.89$   & $0.056$ \\
+First-stage $F$ MSS-trends (cluster Wald)            & $4.45$   & $0.012$ \\
+First-stage $F$ MSS-trends (homoscedastic)           & $7.48$   & $0.0006$ \\
+Stock--Yogo 10\%-maximum-size critical value         & $19.93$  & --- \\
+\textit{Endogeneity} & & \\
+Wu--Hausman                                          & $0.14$   & $0.705$ \\
+\textit{Overidentification} & & \\
+Sargan                                               & $2.40$   & $0.121$ \\
+\textit{Bootstrap inference} & & \\
+Cluster-bootstrap 95\% CI for $\beta^{\text{IV}}$    & $[-3.52,\,3.51]$ & --- \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The diagnostics tell a coherent story. Heteroscedasticity is decisively
+present, confirming the necessity of robust standard errors for the LPM.
+Country fixed effects are jointly significant, but the Hausman test
+returns a vanishing statistic that we discount: the test's construction
+assumes the FE estimator is efficient under $H_0$, which fails once
+standard errors are clustered, and its power is limited in moderately
+unbalanced panels. We default to FE.
+
+The weak-instrument diagnostics are the crux. The first-stage $F$ on
+the two excluded rainfall instruments is $2.89$ in our baseline,
+roughly one-seventh of the Stock--Yogo threshold of $19.93$. The
+MSS-trends specification raises it to $4.45$ (cluster-robust) or $7.48$
+(homoscedastic), notably stronger but still below the threshold.
+Conventional 2SLS inference is therefore unreliable in both
+specifications, and the Wu--Hausman test fails to reject exogeneity
+($p = 0.705$): in this sample we have no positive statistical evidence
+that OLS is biased, though theory says it must be.
+
+A non-parametric cluster bootstrap (500 replications, resampling
+countries with replacement) yields a 95\% percentile interval of
+$[-3.52,\,3.51]$, wide enough to include zero and most economically
+relevant magnitudes. The Sargan test on the two rainfall instruments
+fails to reject ($p = 0.121$), which we read as weak reassurance
+only: with one degree of freedom and two instruments that share their
+exogeneity argument, the test cannot detect homogeneous invalidity of
+the kind \citet{Sarsons2015} flags.
+
+\begin{table}[H]
+\centering
+\caption{Anderson-Hsiao first-difference IV. The structural
+equation~\eqref{eq:structural} is first-differenced to remove country
+fixed effects; $\Delta g^{y}_{it}$ is instrumented by the lagged level
+$g^{y}_{i,t-1}$. Cluster-robust SE at country level in parentheses.}
+\label{tab:ah}
+\small
+\begin{tabular}{lr}
+\toprule
+ & Anderson-Hsiao FD-IV \\
+\midrule
+GDP growth ($\Delta$)         & $-0.349$ \\
+                              & $(0.383)$ \\
+Polity~2 (lag, $\Delta$)      & $-0.005$ \\
+                              & $(0.005)$ \\
+\midrule
+$N$ (country-years)           & 620 \\
+Countries                     & 41 \\
+First-stage $F$ on $g^{y}_{i,t-1}$ (cluster-robust) & 451.7 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The Anderson-Hsiao estimate is negative but imprecise: $\hat\beta_{AH}
+= -0.349$ with cluster-robust standard error $0.383$ ($p = 0.36$). The
+first-stage $F$ on the lagged level $g^{y}_{i,t-1}$ is $451.7$, far
+above the Stock-Yogo 10\%-maximum-size critical value of $16.4$ for one
+instrument and one endogenous regressor. The strength of the
+first stage reflects mean reversion in the country-level growth
+series: high past growth predicts a large negative change in current
+growth almost mechanically, which makes the lagged level a relevant
+instrument by construction. Identification, however, rests on a
+different assumption from MSS: past growth must be uncorrelated with
+the change in unobserved conflict shocks,
+$\mathrm{Cov}(g^{y}_{i,t-1}, \Delta u_{it}) = 0$. This is logically
+independent from the rainfall exclusion restriction; the two
+strategies fail or succeed for different reasons. The MSS sign appears
+again, but the panel-internal design pins down only the direction.
 
 % ===========================================================================
 \section{Discussion}\label{sec:discussion}
 % ===========================================================================
-% TODO: what the design can and cannot identify; the GMM-rescue conclusion.
+The empirical findings are mixed and the appropriate reading depends
+on what one is willing to assume about identification.
+
+OLS recovers the qualitative MSS direction with a tight standard
+error: $\hat\beta_{\text{POLS}} = -0.507$. Under exogeneity of growth
+(which the three endogeneity sources of Section~\ref{sec:intro} rule
+out), this would be the most precise summary of the conditional
+relationship between growth and conflict. As a causal estimate, it is
+not defensible.
+
+Under the MSS rainfall identification, conventional inference is
+unreliable. The first-stage $F$ of $2.89$ in our two-way FE
+specification is roughly one-seventh of the Stock-Yogo threshold; the
+2SLS point estimate carries the wrong sign and a confidence interval
+that covers the entire interesting parameter space. Restoring the MSS
+country-trend specification raises the first stage to $4.45$ and
+recovers $\hat\beta = -1.30$, of the correct sign but still
+imprecisely estimated. The cluster bootstrap percentile interval
+$[-3.52,\,3.51]$ confirms the order of magnitude of the irreducible
+uncertainty in this design under conventional 2SLS, though the
+bootstrap addresses finite-sample clustered inference and does not
+itself restore identification under weak instruments.
+
+Under the panel-internal Anderson-Hsiao identification, the negative
+sign reappears ($\hat\beta_{\text{AH}} = -0.349$) but the estimate
+remains imprecise. The first-stage strength is mechanical: growth's
+mean reversion makes the lagged level a strong predictor of the first
+difference, but this does not introduce new identifying variation
+that is logically independent of the rainfall design's failures.
+
+What the data support: the qualitative sign of the MSS effect is
+robust across credible specifications under at least two distinct
+identifying assumptions (rainfall exclusion, past-growth
+orthogonality). What the data do not support: a precise magnitude, or
+a credible defence of either identifying assumption against the
+\citet{Sarsons2015} critique, which targets the rainfall channel
+directly. The Sargan over-identification test on the two rainfall
+instruments does not reject, but with one degree of freedom and two
+instruments that share their exogeneity argument the test has neither
+the power nor the structure to detect the kind of violation that
+matters.
+
+The most honest reading is that the data inform the sign of $\beta$
+but not its magnitude. A precise causal estimate of how much income
+shocks raise the probability of civil conflict in this sample requires
+either a stronger instrument, the commodity-price approach of
+\citet{BrucknerCiccone2010} being the leading candidate, or a research
+design that does not rely on rainfall at all.
 
 % ---------------------- bibliography ----------------------
 \renewcommand{\refname}{References}
 \begin{thebibliography}{99}\small
 
-\bibitem[Anderson and Rubin(1949)]{AndersonRubin1949}
-Anderson, T.W., and H.\ Rubin (1949). ``Estimation of the parameters
-  of a single equation in a complete system of stochastic equations.''
-  \emph{Annals of Mathematical Statistics} 20(1): 46--63.
-
-\bibitem[Arellano and Bond(1991)]{ArellanoBond1991}
-Arellano, M., and S.\ Bond (1991). ``Some tests of specification for
-  panel data: Monte Carlo evidence and an application to employment
-  equations.'' \emph{Review of Economic Studies} 58(2): 277--297.
-
-\bibitem[Blundell and Bond(1998)]{BlundellBond1998}
-Blundell, R., and S.\ Bond (1998). ``Initial conditions and moment
-  restrictions in dynamic panel data models.''
-  \emph{Journal of Econometrics} 87(1): 115--143.
+\bibitem[Anderson and Hsiao(1981)]{AndersonHsiao1981}
+Anderson, T.W., and C.\ Hsiao (1981). ``Estimation of dynamic models
+  with error components.'' \emph{Journal of the American Statistical
+  Association} 76(375): 598--606.
 
 \bibitem[Bound, Jaeger, and Baker(1995)]{BoundJaegerBaker1995}
 Bound, J., D.A.\ Jaeger, and R.M.\ Baker (1995). ``Problems with
@@ -367,14 +696,6 @@ Miguel, E., S.\ Satyanath, and E.\ Sergenti (2004). ``Economic
 Miguel, E., and S.\ Satyanath (2011). ``Re-examining economic shocks
   and civil conflict.'' \emph{American Economic Journal: Applied
   Economics} 3(4): 228--232.
-
-\bibitem[Nickell(1981)]{Nickell1981}
-Nickell, S.\ (1981). ``Biases in dynamic models with fixed
-  effects.'' \emph{Econometrica} 49(6): 1417--1426.
-
-\bibitem[Roodman(2009)]{Roodman2009}
-Roodman, D.\ (2009). ``A note on the theme of too many instruments.''
-  \emph{Oxford Bulletin of Economics and Statistics} 71(1): 135--158.
 
 \bibitem[Sarsons(2015)]{Sarsons2015}
 Sarsons, H.\ (2015). ``Rainfall and conflict: A cautionary tale.''
