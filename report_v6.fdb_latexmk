@@ -1,8 +1,7 @@
 # Fdb version 4
-["pdflatex"] 1779627324.2917 "/Users/alexander/Coding/Econometrics/report_v5.tex" "report_v5.pdf" "report_v5" 1779627325.07415 0
-  "/Users/alexander/Coding/Econometrics/report_v5.tex" 1779627254.59867 38291 600f63b501732d298819b1f97c1a14d6 ""
+["pdflatex"] 1779666705.53153 "/Users/alexander/Coding/Econometrics/report_v6.tex" "report_v6.pdf" "report_v6" 1779666706.32998 0
+  "/Users/alexander/Coding/Econometrics/report_v6.tex" 1779666647.86443 37978 c704d66e8d0006bd23ba4c2e02f0b79b ""
   "/usr/local/texlive/2026/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc" 1254269338 2375 baa924870cfb487815765f9094cf3728 ""
-  "/usr/local/texlive/2026/texmf-dist/fonts/enc/dvips/lm/lm-mathex.enc" 1202520719 3486 c7eadf5dcc57b3b2d11736679f6636ba ""
   "/usr/local/texlive/2026/texmf-dist/fonts/enc/dvips/lm/lm-mathit.enc" 1202520719 2405 5dcf2c1b967ee25cc46c58cd52244aed ""
   "/usr/local/texlive/2026/texmf-dist/fonts/enc/dvips/lm/lm-mathsy.enc" 1202520719 2840 216e6e45ad352e2456e1149f28885bee ""
   "/usr/local/texlive/2026/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc" 1202520719 2327 9d6df24f9c4f7368395224341a95523a ""
@@ -56,7 +55,6 @@
   "/usr/local/texlive/2026/texmf-dist/fonts/tfm/public/lm/rm-lmr9.tfm" 1254269338 11884 c93929a6974dce79eabb778f219d7e18 ""
   "/usr/local/texlive/2026/texmf-dist/fonts/type1/public/lm/lmbx10.pfb" 1255129361 121021 1bf809ce4a594679006bd72263eba59b ""
   "/usr/local/texlive/2026/texmf-dist/fonts/type1/public/lm/lmbx12.pfb" 1255129361 116908 1fca96723793882c2e0160350c192fc8 ""
-  "/usr/local/texlive/2026/texmf-dist/fonts/type1/public/lm/lmex10.pfb" 1254269338 23055 2e5b42921de910eaa97b85df04ca4891 ""
   "/usr/local/texlive/2026/texmf-dist/fonts/type1/public/lm/lmmi10.pfb" 1254269338 30388 702fae6a5f0e6e9c48a1d872b442ffcf ""
   "/usr/local/texlive/2026/texmf-dist/fonts/type1/public/lm/lmmi7.pfb" 1254269338 30789 be3ebdf20b6442cc4aaf81a81e17daf4 ""
   "/usr/local/texlive/2026/texmf-dist/fonts/type1/public/lm/lmmi8.pfb" 1254269338 30635 833ec815d446ec453a4913fc26d24cbc ""
@@ -218,12 +216,12 @@
   "/usr/local/texlive/2026/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1775133818 5573038 b99aad5e4898a9034e953632f940512b ""
   "/usr/local/texlive/2026/texmf-var/web2c/pdftex/pdflatex.fmt" 1775133790 3636771 a6800745d4df3bf6edb3b884339d025b ""
   "/usr/local/texlive/2026/texmf.cnf" 1774209515 577 648cd9f92f9c0eac486f4c71c85cfbbe ""
-  "report_v5.aux" 1779627325.00656 8073 3968e15bf6c4a1312e2b696bf3299a76 "pdflatex"
-  "report_v5.out" 1779627325.00712 2223 df17965e75753941b38f36973e3891be "pdflatex"
-  "report_v5.tex" 1779627254.59867 38291 600f63b501732d298819b1f97c1a14d6 ""
+  "report_v6.aux" 1779666706.25323 7903 43512560ec7e9612df8e9392b2a2d480 "pdflatex"
+  "report_v6.out" 1779666706.25382 2324 715ecd72fba63d5a78fcab9292d4dfc9 "pdflatex"
+  "report_v6.tex" 1779666647.86443 37978 c704d66e8d0006bd23ba4c2e02f0b79b ""
   (generated)
-  "report_v5.aux"
-  "report_v5.log"
-  "report_v5.out"
-  "report_v5.pdf"
+  "report_v6.aux"
+  "report_v6.log"
+  "report_v6.out"
+  "report_v6.pdf"
   (rewritten before read)
