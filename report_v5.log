@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded format=pdflatex 2026.4.2)  23 MAY 2026 23:33
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded format=pdflatex 2026.4.2)  24 MAY 2026 14:39
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -882,21 +882,21 @@ Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
  [4] [5{/usr/local/texlive/2026/texmf-dist/fonts/enc/dvips/lm/lm-mathex.enc}]
-Overfull \hbox (1.76277pt too wide) in paragraph at lines 402--409
+Overfull \hbox (1.76277pt too wide) in paragraph at lines 403--410
 []\T1/lmr/m/it/10.95 (-20) Exclusion. \T1/lmr/m/n/10.95 (-20) Not di-rectly testable. With two in-stru-ments we re-port the Sar-gan over-identification
  []
 
 [6]
 
-LaTeX Warning: Reference `tab:gmm' on page 7 undefined on input line 450.
+LaTeX Warning: Reference `tab:gmm' on page 7 undefined on input line 451.
 
 
-Overfull \hbox (6.42317pt too wide) in paragraph at lines 461--480
+Overfull \hbox (6.42317pt too wide) in paragraph at lines 462--481
  [][] 
  []
 
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <9> on input line 481.
+(Font)              <9> on input line 482.
 [7] [8] [9] [10] (./report_v5.aux)
  ***********
 LaTeX2e <2025-11-01>
@@ -910,18 +910,18 @@ Package rerunfilecheck Info: File `report_v5.out' has not changed.
 (rerunfilecheck)             Checksum: B39459354F3F6B820FA0A78029264AFE;2031.
  ) 
 Here is how much of TeX's memory you used:
- 31076 strings out of 467525
- 639301 string characters out of 5418983
- 1043936 words of memory out of 5000000
- 59239 multiletter control sequences out of 15000+600000
- 746730 words of font info for 235 fonts, out of 8000000 for 9000
+ 31058 strings out of 467525
+ 638976 string characters out of 5418983
+ 1043836 words of memory out of 5000000
+ 59230 multiletter control sequences out of 15000+600000
+ 746434 words of font info for 232 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  128i,13n,132p,1043b,1058s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/local/texlive/2026/texmf-dist/fonts/type1/public/lm/lmbx10.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/lm/lmbx12.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/lm/lmex10.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/lm/lmmi10.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/lm/lmmi7.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/lm/lmmi8.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/lm/lmmi9.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/lm/lmr10.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/lm/lmr12.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/lm/lmr7.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/lm/lmr8.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/lm/lmr9.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/lm/lmri10.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/lm/lmsy10.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/lm/lmsy6.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/lm/lmsy7.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/lm/lmsy8.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/lm/lmtt10.pfb>
-Output written on report_v5.pdf (10 pages, 329807 bytes).
+Output written on report_v5.pdf (10 pages, 329045 bytes).
 PDF statistics:
- 311 PDF objects out of 1000 (max. 8388607)
- 253 compressed objects within 3 object streams
- 44 named destinations out of 1000 (max. 500000)
+ 309 PDF objects out of 1000 (max. 8388607)
+ 251 compressed objects within 3 object streams
+ 41 named destinations out of 1000 (max. 500000)
  66157 words of extra memory for PDF output out of 74296 (max. 10000000)
 
